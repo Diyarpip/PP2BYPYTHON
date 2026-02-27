@@ -1,17 +1,12 @@
-
-def even_generator(n):
+def even_numbers(n):
     for i in range(0, n + 1, 2):
-        yield str(i)
+        yield i
 
-def solve():
-    try:
-        line = input().strip()
-        if not line:
-            return
-        n = int(line)
-        print(",".join(even_generator(n)))
-    except EOFError:
-        pass
+n = int(input())
 
-if __name__ == "__main__":
-    solve()
+first = True
+for num in even_numbers(n):
+    if not first:
+        print(",", end="")
+    print(num, end="")
+    first = False

@@ -1,14 +1,10 @@
-# 1. Создаем функцию-генератор
-def find_numbers(n):
-    for i in range(0, n + 1):
-        # Если число делится и на 3, и на 4 без остатка
+def divisible_by_3_and_4_generator(limit):
+
+    for i in range(0, limit + 1):
         if i % 3 == 0 and i % 4 == 0:
-            yield i  # "Выдаем" число и ждем следующего шага
+            yield i
 
-# 2. Спрашиваем число у пользователя
-n = int(input())
+numbers = divisible_by_3_and_4_generator(n)
+result = ' '.join(str(num) for num in numbers)
 
-# 3. Запускаем цикл, который берет числа из нашего генератора
-for number in find_numbers(n):
-    # Печатаем число, а в конце ставим пробел вместо перехода на новую строку
-    print(number, end=" ")
+print(result)

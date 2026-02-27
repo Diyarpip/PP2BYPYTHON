@@ -1,53 +1,50 @@
 from datetime import datetime, timedelta
-import re
 
-def parse_datetime(s):
-    match = re.match(r'(\d{4})-(\d{2})-(\d{2}) UTC([+-])(\d{2}):(\d{2})', s)
-    year, month, day, sign, hour, minute = match.groups()
-    year, month, day = int(year), int(month), int(day)
-    hour, minute = int(hour), int(minute)
+def parse_date(line):
+    date_part, tz_part = line.strip().split()
     
-    offset_seconds = hour * 3600 + minute * 60
-    if sign == '+':
-        offset_seconds = -offset_seconds  # local ahead of UTC
-    return (year, month, day), offset_seconds
-
-def is_leap_year(year):
-    return (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0)
-
-def get_birthday_utc(birth_year, birth_month, birth_day, offset_seconds, target_year):
-    if birth_month == 2 and birth_day == 29 and not is_leap_year(target_year):
-        month, day = 2, 28
-    else:
-        month, day = birth_month, birth_day
+    year, month, day = map(int, date_part.split("-"))
     
-    dt_local = datetime(target_year, month, day, 0, 0, 0)
-    dt_utc = dt_local + timedelta(seconds=offset_seconds)
+    sign = 1 if "+" in tz_part else -1
+    hh, mm = map(int, tz_part[3:].split(":"))
+    
+    # создаём локальную полночь
+    dt = datetime(year, month, day, 0, 0, 0)
+    
+    # переводим в UTC вручную
+    offset = timedelta(hours=hh, minutes=mm) * sign
+    dt_utc = dt - offset
+    
     return dt_utc
 
-def main():
-    s1 = input().strip()
-    s2 = input().strip()
-    
-    (byear, bmonth, bday), boffset = parse_datetime(s1)
-    (cyear, cmonth, cday), coffset = parse_datetime(s2)
-    
-    current_local = datetime(cyear, cmonth, cday, 0, 0, 0)
-    current_utc = current_local + timedelta(seconds=coffset)
-    
-    if (bmonth, bday) > (cmonth, cday):
-        target_year = cyear
-    else:
-        target_year = cyear + 1
-    
-    birthday_utc = get_birthday_utc(byear, bmonth, bday, boffset, target_year)
-    
-    diff_seconds = (birthday_utc - current_utc).total_seconds()
-    if diff_seconds < 0:
-        diff_seconds = 0
-    
-    days = int(diff_seconds // 86400)
-    print(days)
+def is_leap(year):
+    return year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)
 
-if __name__ == "__main__":
-    main()
+birth_line = input()
+current_line = input()
+
+birth_dt = parse_date(birth_line)
+current_dt = parse_date(current_line)
+
+birth_month = birth_dt.month
+birth_day = birth_dt.day
+
+year = current_dt.year
+
+def make_birthday(year):
+    m = birth_month
+    d = birth_day
+    
+    if m == 2 and d == 29 and not is_leap(year):
+        d = 28
+        
+    return datetime(year, m, d)
+
+candidate = make_birthday(year)
+
+if candidate < current_dt:
+    candidate = make_birthday(year + 1)
+
+diff_seconds = (candidate - current_dt).total_seconds()
+
+print(int(diff_seconds // 86400))
