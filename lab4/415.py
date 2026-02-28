@@ -1,50 +1,40 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
+import math
 
-def parse_date(line):
-    date_part, tz_part = line.strip().split()
+def parse_line(line):
+    date_part, tz_part = line.split()
+    year, month, day = map(int, date_part.split('-'))
     
-    year, month, day = map(int, date_part.split("-"))
+    sign = 1 if '+' in tz_part else -1
+    hh, mm = map(int, tz_part[4:].split(':'))
+    offset = timezone(sign * timedelta(hours=hh, minutes=mm))
     
-    sign = 1 if "+" in tz_part else -1
-    hh, mm = map(int, tz_part[3:].split(":"))
-    
-    # создаём локальную полночь
-    dt = datetime(year, month, day, 0, 0, 0)
-    
-    # переводим в UTC вручную
-    offset = timedelta(hours=hh, minutes=mm) * sign
-    dt_utc = dt - offset
-    
-    return dt_utc
+    return year, month, day, offset
 
 def is_leap(year):
-    return year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)
+    return (year % 4 == 0 and year % 100 != 0) or (year % 400 == 0)
 
 birth_line = input()
 current_line = input()
 
-birth_dt = parse_date(birth_line)
-current_dt = parse_date(current_line)
+by, bm, bd, birth_tz = parse_line(birth_line)
+cy, cm, cd, current_tz = parse_line(current_line)
 
-birth_month = birth_dt.month
-birth_day = birth_dt.day
-
-year = current_dt.year
+current_dt = datetime(cy, cm, cd, 0, 0, 0, tzinfo=current_tz).astimezone(timezone.utc)
 
 def make_birthday(year):
-    m = birth_month
-    d = birth_day
-    
-    if m == 2 and d == 29 and not is_leap(year):
-        d = 28
-        
-    return datetime(year, m, d)
+    day = bd
+    if bm == 2 and bd == 29 and not is_leap(year):
+        day = 28
+    return datetime(year, bm, day, 0, 0, 0, tzinfo=birth_tz).astimezone(timezone.utc)
 
-candidate = make_birthday(year)
+next_birthday = make_birthday(cy)
 
-if candidate < current_dt:
-    candidate = make_birthday(year + 1)
+if next_birthday < current_dt:
+    next_birthday = make_birthday(cy + 1)
 
-diff_seconds = (candidate - current_dt).total_seconds()
+seconds = (next_birthday - current_dt).total_seconds()
 
-print(int(diff_seconds // 86400))
+days = math.ceil(seconds / 86400)
+
+print(days)
