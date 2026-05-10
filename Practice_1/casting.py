@@ -1,0 +1,18 @@
+# 1 example
+
+x = int(1) # x will be 1
+y = int(2.9) # y will be 2
+z = int("3") # z will be 3
+
+# 2 example
+
+x = float(1) # x will be 1.0
+y = float(2.8) # y will be 2.8
+z = float("3") # z will be 3.0
+w = float("4.2") # w will be 4.2
+
+# 3 example
+
+x = str("bro") # x will be 'bro'
+y = str(170) # y will be '170'
+z = str(3.0) # z will be '3.0'

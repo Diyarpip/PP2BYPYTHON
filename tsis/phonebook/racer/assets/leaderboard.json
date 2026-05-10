@@ -1,8 +1,23 @@
 [
     {
         "name": "Player 1",
+        "score": 217,
+        "distance": 1000.1
+    },
+    {
+        "name": "Player 1",
+        "score": 213,
+        "distance": 839.0
+    },
+    {
+        "name": "Player 1",
         "score": 196,
         "distance": 607.7
+    },
+    {
+        "name": "Player 1",
+        "score": 185,
+        "distance": 865.3
     },
     {
         "name": "PP2",
@@ -26,27 +41,12 @@
     },
     {
         "name": "Player 1",
-        "score": 133,
-        "distance": 877.5
+        "score": 142,
+        "distance": 574.8
     },
     {
         "name": "Player 1",
-        "score": 129,
-        "distance": 596.7
-    },
-    {
-        "name": "Player 1",
-        "score": 127,
-        "distance": 565.2
-    },
-    {
-        "name": "Anonymous",
-        "score": 120,
-        "distance": 304.7
-    },
-    {
-        "name": "Player 1",
-        "score": 107,
-        "distance": 617.9
+        "score": 136,
+        "distance": 483.9
     }
 ]
